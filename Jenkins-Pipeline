@@ -1,0 +1,53 @@
+pipeline {
+    agent any
+    
+    tools {
+        nodejs 'node18' 
+    }
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/svkishan/jenkins-docker-demo.git'
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'npm install'
+            }
+        }
+
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t jenkins-demo-app .'
+            }
+        }
+
+        stage('Run Docker Container') {
+            steps {
+                sh '''
+                docker stop demo-container || true
+                docker rm demo-container || true
+                docker run --name demo-container jenkins-demo-app
+                '''
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "BUILD SUCCESS "
+        }
+        failure {
+            echo "BUILD FAILED "
+        }
+    }
+}
