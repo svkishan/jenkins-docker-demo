@@ -152,8 +152,7 @@ Click OK
 
 STEP 15: Jenkins Pipeline Script
 
-Paste this 👇
-(Replace GitHub URL)
+
 
 pipeline {
     agent any
